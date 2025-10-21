@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Prova • Motion Avançado (Lenis + GSAP + Pixi)</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0b0c10; --panel:#101317; --ink:#e9eef5; --muted:#9aa3b2;
+    --acc1:#6EE7F9; --acc2:#8A2BE2;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;-webkit-font-smoothing:antialiased}
+  a{color:inherit;text-decoration:none}
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important; transition:none !important; scroll-behavior:auto !important}
+  }
+
+  /* Header sticky */
+  .nav{position:fixed;left:24px;right:24px;top:18px;z-index:40;display:flex;justify-content:space-between;align-items:center;
+       padding:10px 14px;border:1px solid rgba(255,255,255,.06);border-radius:999px;background:rgba(8,10,14,.55);backdrop-filter: blur(10px);
+       transition:transform .35s ease, background .25s ease}
+  .nav.is-compact{transform:translateY(-6px); background:rgba(8,10,14,.75)}
+  .brand{font-family:Montserrat,system-ui;font-weight:700;background:linear-gradient(90deg,var(--acc1),var(--acc2));-webkit-background-clip:text;background-clip:text;color:transparent}
+
+  /* Sections */
+  section{padding:8rem 6vw}
+  .hero{min-height:110svh;display:grid;place-items:center;padding-top:18vh}
+  .wrap{max-width:1200px;margin:0 auto}
+  h1{font-family:Montserrat,system-ui;font-size:clamp(2.2rem,6vw,4.6rem);line-height:.98;margin:0 0 .8rem}
+  p.lead{color:var(--muted);max-width:60ch;margin:0 0 1.4rem}
+
+  .btn{display:inline-block;border:none;border-radius:999px;padding:12px 18px;font-weight:700;cursor:pointer}
+  .btn.primary{background:linear-gradient(90deg,var(--acc1),var(--acc2));color:#07141a}
+
+  /* Scroll video */
+  .svideo{position:relative;border-radius:20px;overflow:hidden;border:1px solid rgba(255,255,255,.08);box-shadow:0 24px 60px rgba(0,0,0,.35)}
+  .svideo video{width:100%;display:block;filter:saturate(1.03) contrast(1.04)}
+
+  /* Horizontal gallery pin */
+  .hwrap{position:relative;height:100vh}
+  .hpin{position:sticky;top:0;height:100vh;display:grid;place-items:center;overflow:hidden;border-block:1px solid rgba(255,255,255,.07)}
+  .htrack{display:flex;gap:24px;will-change:transform;padding:0 6vw}
+  .shot{flex:0 0 70vw;max-width:900px;aspect-ratio:16/9;border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,.08)}
+  .shot img{width:100%;height:100%;object-fit:cover;filter:saturate(1.05) contrast(1.05)}
+
+  /* Pixi displacement card */
+  .pixi-card{margin-top:2rem;border-radius:18px;overflow:hidden;border:1px solid rgba(255,255,255,.08);background:var(--panel)}
+  .pixi-stage{width:100%;height:360px}
+
+  /* Grid de features */
+  .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}
+  .card{grid-column:span 3;min-height:160px;padding:18px;border-radius:14px;border:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.03);opacity:0;transform:translateY(26px)}
+  @media (max-width:1000px){.card{grid-column:span 6}}
+  @media (max-width:680px){.card{grid-column:span 12}}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <div class="brand">NASA-747</div>
+  <div>
+    <a href="#efeitos">Efeitos</a>
+    <a href="#galeria">Galeria</a>
+    <a href="#pixi">Hover Líquido</a>
+  </div>
+</nav>
+
+<!-- HERO com vídeo guiado pelo scroll -->
+<section class="hero" id="topo">
+  <div class="wrap">
+    <h1>Motion avançado com <span style="background:linear-gradient(90deg,#6EE7F9,#8A2BE2);-webkit-background-clip:text;background-clip:text;color:transparent">propósito</span></h1>
+    <p class="lead">Smooth scroll, vídeo coreografado, galeria horizontal pinada e hover líquido. Tudo em um arquivo. Sem “ferramenta mágica”.</p>
+    <a href="#efeitos" class="btn primary">Ver na prática</a>
+    <figure class="svideo" style="margin-top:24px">
+      <video id="reel" src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4" playsinline muted preload="auto"></video>
+    </figure>
+  </div>
+</section>
+
+<!-- Grid de efeitos (reveal) -->
+<section id="efeitos">
+  <div class="wrap">
+    <h2 style="font-family:Montserrat;margin:0 0 .6rem">Efeitos em produção</h2>
+    <p class="lead" style="margin-bottom:1.2rem">Reveals, parallax e header sticky. Tudo com GSAP + ScrollTrigger + Lenis.</p>
+    <div class="grid">
+      <div class="card">Lenis: rolagem macia de cinema.</div>
+      <div class="card">ScrollTrigger: precisão e scrub no scroll.</div>
+      <div class="card">Pinning: sessões que “grudam” no topo.</div>
+      <div class="card">A11y: `prefers-reduced-motion` respeitado.</div>
+    </div>
+  </div>
+</section>
+
+<!-- Galeria horizontal pinada -->
+<section id="galeria" class="hwrap">
+  <div class="hpin">
+    <div class="htrack" id="htrack">
+      <figure class="shot"><img loading="lazy" src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=1600&auto=format&fit=crop" alt="Projeto 1"></figure>
+      <figure class="shot"><img loading="lazy" src="https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?q=80&w=1600&auto=format&fit=crop" alt="Projeto 2"></figure>
+      <figure class="shot"><img loading="lazy" src="https://images.unsplash.com/photo-1508921912186-1d1a45ebb3c1?q=80&w=1600&auto=format&fit=crop" alt="Projeto 3"></figure>
+      <figure class="shot"><img loading="lazy" src="https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?q=80&w=1600&auto=format&fit=crop" alt="Projeto 4"></figure>
+    </div>
+  </div>
+</section>
+
+<!-- Pixi displacement hover -->
+<section id="pixi">
+  <div class="wrap">
+    <h2 style="font-family:Montserrat;margin:0 0 .6rem">Hover líquido (PixiJS)</h2>
+    <p class="lead">Textura viva sem pesar a página. Passe o mouse.</p>
+    <div class="pixi-card">
+      <div class="pixi-stage" id="pixiStage"></div>
+    </div>
+  </div>
+</section>
+
+<footer style="padding:4rem 6vw;color:var(--muted);text-align:center;border-top:1px solid rgba(255,255,255,.06)">
+  © <span id="year"></span> NASA-747 • pronto pra vender site, não pra contar história
+</footer>
+
+<!-- Libs -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://unpkg.com/@studio-freight/lenis@1.0.35/bundled/lenis.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pixi.js@7.x/dist/pixi.min.js"></script>
+
+<script>
+  // Ano
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  // Smooth scroll (Lenis) + sync com ScrollTrigger
+  const lenis = new Lenis({ lerp: 0.12, smoothWheel: true, wheelMultiplier: 1.05 });
+  function raf(t){ lenis.raf(t); requestAnimationFrame(raf) } requestAnimationFrame(raf);
+  gsap.registerPlugin(ScrollTrigger);
+  gsap.ticker.add((time)=> lenis.raf(time*1000));
+  lenis.on('scroll', ScrollTrigger.update);
+
+  // Header sticky compacto
+  const header = document.querySelector('.nav');
+  addEventListener('scroll', ()=> header.classList.toggle('is-compact', (scrollY||0) > 80), {passive:true});
+
+  // Reveals nos cards
+  gsap.utils.toArray('.card').forEach(el=>{
+    gsap.to(el, {opacity:1, y:0, duration:.9, ease:'power3.out',
+      scrollTrigger:{trigger:el, start:'top 85%', once:true}});
+  });
+
+  // Vídeo guiado pelo scroll
+  const v = document.getElementById('reel');
+  v.addEventListener('loadedmetadata', ()=>{
+    gsap.to(v, {
+      currentTime: v.duration - 0.01, ease:'none',
+      scrollTrigger:{ trigger: ".svideo", start:"top 80%", end:"bottom top", scrub:true }
+    });
+  }, { once:true });
+
+  // Galeria horizontal pinada
+  const track = document.getElementById('htrack');
+  const calcW = () => track.scrollWidth - innerWidth;
+  gsap.to(track, {
+    x: () => -calcW(), ease:'none',
+    scrollTrigger:{
+      trigger: ".hwrap", start:"top top", end: () => "+=" + track.scrollWidth,
+      scrub:true, pin: ".hpin", anticipatePin:1
+    }
+  });
+
+  // PixiJS displacement hover
+  {
+    const stage = document.getElementById('pixiStage');
+    const app = new PIXI.Application({ resizeTo: stage, backgroundAlpha: 0, antialias:true });
+    stage.appendChild(app.view);
+
+    const img = "https://images.unsplash.com/photo-1556157382-97eda2d62296?q=80&w=1600&auto=format&fit=crop";
+    const disp= "https://images.unsplash.com/photo-1526318472351-c75fcf070305?q=80&w=800&auto=format&fit=crop";
+
+    Promise.all([PIXI.Assets.load(img), PIXI.Assets.load(disp)]).then(([tex, dtex])=>{
+      const sp = new PIXI.Sprite(tex); sp.anchor.set(.5);
+      const fit = ()=>{ sp.x = app.renderer.width/2; sp.y = app.renderer.height/2;
+        const s = Math.max(app.renderer.width/tex.width, app.renderer.height/tex.height); sp.scale.set(s); };
+      fit(); app.stage.addChild(sp);
+
+      const d = new PIXI.Sprite(dtex);
+      const f = new PIXI.filters.DisplacementFilter(d, 100);
+      d.texture.baseTexture.wrapMode = PIXI.WRAP_MODES.REPEAT;
+      app.stage.addChild(d); app.stage.filters = [f];
+
+      app.ticker.add(()=>{ d.x += 1.2; d.y += .9; });
+
+      stage.addEventListener('pointerenter', ()=> gsap.to(f,{ scaleX:220, scaleY:220, duration:.5 }));
+      stage.addEventListener('pointerleave', ()=> gsap.to(f,{ scaleX:100, scaleY:100, duration:.6 }));
+
+      addEventListener('resize', fit);
+    });
+  }
+
+  // Refresh em resize
+  addEventListener('resize', ()=> ScrollTrigger.refresh());
+</script>
+</body>
+</html>
