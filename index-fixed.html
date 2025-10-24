@@ -1,0 +1,481 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>NASA-747 | WebDesigner Pro — Motion inspirado em Jonite</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Space+Grotesk:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0b0b10; --card:#12121a; --text:#e9eef5; --muted:#9aa4b2;
+  --brand1:#7c5cff; --brand2:#4dd0ff; --accent:#22d3ee; --shadow:rgba(0,0,0,.35);
+}
+*{box-sizing:border-box} html,body{height:100%}
+body{margin:0;background:radial-gradient(1000px 600px at 80% -10%,#131324 0%,transparent 60%),var(--bg);color:var(--text);font:400 16px/1.6 Inter,system-ui,-apple-system,Segoe UI,Roboto}
+a{color:inherit;text-decoration:none}
+.container{max-width:1200px;margin:0 auto;padding:0 24px}
+.hero{min-height:92vh;display:grid;place-items:center;position:relative;overflow:hidden}
+.hero:before{content:"";position:absolute;inset:-40% -20% auto -20%;height:80vh;background:radial-gradient(500px 300px at 30% 20%,#1a1a2f 0%,transparent 60%),radial-gradient(400px 240px at 70% 10%,#112030 0%,transparent 60%);z-index:0}
+.nav{position:fixed;inset:16px 16px auto 16px;z-index:60;display:flex;justify-content:space-between;align-items:center;background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:10px 14px}
+.brand{font:800 18px Space Grotesk,Inter;letter-spacing:.5px;z-index:70}
+.badge{font-size:12px;padding:4px 10px;border-radius:9999px;background:linear-gradient(90deg,var(--brand1),var(--brand2));color:#07111a}
+.progress{position:fixed;left:0;top:0;height:4px;width:0;background:linear-gradient(90deg,var(--brand1),var(--brand2));z-index:100;transition:width 0.1s ease-out}
+
+/* Hero layout */
+.hero-inner{position:relative;z-index:10;display:grid;grid-template-columns:1fr 520px;gap:36px;align-items:center;width:100%;max-width:1200px}
+.hero-copy{padding:40px 0}
+h1{font:800 clamp(32px,6vw,84px)/1.05 Space Grotesk,Inter;margin:0 0 14px}
+.headline-split{display:block;overflow:visible}
+.lead{max-width:640px;color:var(--muted);font-size:clamp(16px,2.4vw,20px)}
+.gradient{background:linear-gradient(90deg,var(--brand2),var(--brand1));-webkit-background-clip:text;background-clip:text;color:transparent}
+.cta{display:flex;gap:14px;margin-top:28px}
+.btn{padding:14px 18px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:#191926;color:#e9eef5;transition:.18s;cursor:pointer}
+.btn.primary{background:linear-gradient(90deg,var(--brand1),var(--brand2));color:#061017;border:none}
+.btn:hover{transform:translateY(-1px);box-shadow:0 10px 30px -10px var(--shadow)}
+.btn.magnet{position:relative;overflow:visible;transition:transform 0.2s ease}
+
+/* mask + image panel */
+.mask-reveal{display:grid;grid-template-columns:1.2fr .8fr;gap:28px;align-items:center;margin:80px auto}
+.mask-img{aspect-ratio:16/10;border-radius:18px;overflow:hidden;position:relative;border:1px solid rgba(255,255,255,.08);background:#0e1320}
+.mask-img img, .mask-img video{width:100%;height:100%;object-fit:cover;display:block;transform:scale(1.06);transition:transform 0.6s ease, opacity 0.6s ease}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.kpi{background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:16px}
+.kpi b{font:800 28px Space Grotesk,Inter}
+.kpi span{display:block;color:var(--muted);font-size:13px;margin-top:6px}
+
+/* Cards */
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin:70px 0}
+.card{background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));border:1px solid rgba(255,255,255,.08);border-radius:16px;overflow:hidden;transform-style:preserve-3d;perspective:800px;transition:transform .15s}
+.card .media{height:180px;overflow:hidden}
+.card img{width:100%;height:100%;object-fit:cover;display:block}
+.card .body{padding:16px}
+.card h3{margin:0 0 6px;font:700 18px Space Grotesk,Inter}
+.card p{margin:0;color:var(--muted);font-size:14px}
+
+/* marquee */
+.marquee{overflow:hidden;border-block:1px solid rgba(255,255,255,.06);background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,.01))}
+.marquee .track{display:flex;gap:40px;white-space:nowrap;will-change:transform;padding:14px 0;animation:marqueeMove 30s linear infinite}
+.tag{padding:8px 14px;border-radius:999px;background:#141626;border:1px solid rgba(255,255,255,.08);font:600 14px Inter}
+
+@keyframes marqueeMove {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* video pin */
+.video-pin{position:relative;margin:100px 0;border-radius:18px;overflow:hidden;border:1px solid rgba(255,255,255,.08)}
+.video-pin video{width:100%;display:block;filter:saturate(1.05) contrast(1.05)}
+.video-caption{position:absolute;left:24px;bottom:24px;background:rgba(8,12,20,.55);backdrop-filter:blur(6px);padding:10px 14px;border-radius:10px;border:1px solid rgba(255,255,255,.08);font-weight:600}
+
+/* horizontal gallery */
+.hscroll{position:relative;height:86vh;margin:140px 0}
+.sticky{position:sticky;top:70px;height:70vh;overflow:hidden;border-radius:16px;border:1px solid rgba(255,255,255,.08);background:#0e1117}
+.hrow{display:flex;height:100%;transition:transform 0.1s ease-out}
+.panel{min-width:72vw;display:grid;grid-template-rows:auto 1fr;gap:10px;padding:20px}
+.panel img{width:100%;height:100%;object-fit:cover;border-radius:12px}
+.panel h4{margin:0;font:700 20px Space Grotesk}
+.panel p{margin:0;color:var(--muted);font-size:14px}
+
+/* Utility & performance hints */
+[data-parallax]{will-change:transform}
+.word{display:inline-block;overflow:hidden;vertical-align:top}
+.word>span{display:inline-block;transform:translateY(100%);transition:transform 0.8s ease 0.1s}
+.word.animate>span{transform:translateY(0)}
+
+.btn.magnet{--mx:50%;--my:50%}
+.btn.magnet::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:inherit;
+  pointer-events:none;
+  background:radial-gradient(circle at var(--mx) var(--my), rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.03) 18%, transparent 45%);
+  opacity:0;
+  transition:opacity .25s ease, transform .2s ease;
+  transform:scale(1.02);
+}
+.btn.magnet:hover::before{opacity:1}
+
+/* Simple animations */
+.fade-in{opacity:0;transform:translateY(20px);transition:opacity 0.8s ease, transform 0.8s ease}
+.fade-in.animate{opacity:1;transform:translateY(0)}
+
+.scale-in{opacity:0;transform:scale(1.1);transition:opacity 0.8s ease, transform 0.8s ease}
+.scale-in.animate{opacity:1;transform:scale(1)}
+
+/* footer */
+.footer{padding:70px 0 90px;border-top:1px solid rgba(255,255,255,.06);text-align:center;color:var(--muted)}
+.small{font-size:12px}
+
+/* responsive */
+@media (max-width:1100px){
+  .hero-inner{grid-template-columns:1fr}
+  .mask-reveal{grid-template-columns:1fr;gap:18px}
+}
+@media (max-width:900px){
+  .kpis{grid-template-columns:repeat(2,1fr)}
+  .cards{grid-template-columns:1fr 1fr}
+  .panel{min-width:88vw}
+}
+@media (max-width:640px){
+  .kpis{grid-template-columns:1fr 1fr}
+  .cards{grid-template-columns:1fr}
+  .hero{padding:40px 12px}
+}
+</style>
+</head>
+<body>
+
+<div class="progress" id="progress"></div>
+
+<nav class="nav">
+  <div class="brand">NASA-747</div>
+  <div class="badge">Motion com propósito</div>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner container">
+    <div class="hero-copy">
+      <h1 class="headline-split fade-in">Motion avançado com <span class="gradient">propósito</span></h1>
+      <p class="lead fade-in">Smooth scroll, vídeo coreografado, galeria horizontal pinada e hover líquido. Tudo em um arquivo. Sem "ferramenta mágica".</p>
+      <div class="cta fade-in">
+        <a href="#demo" class="btn primary magnet">Ver na prática</a>
+        <a href="#galeria" class="btn">Portfólio</a>
+      </div>
+    </div>
+    <div class="hero-media scale-in" data-parallax="0.08">
+      <div class="mask-img" aria-hidden="true">
+        <img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?q=80&w=1200&auto=format&fit=crop" alt="Showcase">
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section id="demo" class="container mask-reveal">
+    <div class="mask-img scale-in" data-parallax="0.12">
+      <img src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?q=80&w=1600&auto=format&fit=crop" alt="Showcase">
+    </div>
+    <div class="fade-in">
+      <h2 class="headline-split">Sites que performam</h2>
+      <p class="lead" style="margin:0 0 20px">Design limpo, código leve e conversão como religião. Você cuida do negócio; eu faço a página vender.</p>
+      <div class="kpis">
+        <div class="kpi fade-in"><b class="count" data-to="97">97</b><span>Satisfação</span></div>
+        <div class="kpi fade-in"><b class="count" data-to="3.2">3.2</b><span>Velocidade (s)</span></div>
+        <div class="kpi fade-in"><b class="count" data-to="42">42</b><span>Projetos</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="container cards" aria-label="Serviços">
+    <article class="card tilt fade-in" data-parallax="0.06">
+      <div class="media"><img src="https://images.unsplash.com/photo-1509395176047-4a66953fd231?q=80&w=1200&auto=format&fit=crop" alt=""></div>
+      <div class="body"><h3>Landing de Alta Conversão</h3><p>Arquitetura AIDA + copy enxuta + microinterações que guiam o clique.</p></div>
+    </article>
+    <article class="card tilt fade-in" data-parallax="0.04">
+      <div class="media"><img src="https://images.unsplash.com/photo-1520975916090-3105956dac38?q=80&w=1200&auto=format&fit=crop" alt=""></div>
+      <div class="body"><h3>Loja que Vende</h3><p>UX de e-commerce sem atrito, performance e SEO decente de verdade.</p></div>
+    </article>
+    <article class="card tilt fade-in" data-parallax="0.05">
+      <div class="media"><img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=1200&auto=format&fit=crop" alt=""></div>
+      <div class="body"><h3>Site Institucional</h3><p>Autoridade, velocidade, clareza. Sem barulho, só resultado.</p></div>
+    </article>
+  </section>
+
+  <div class="marquee">
+    <div class="track" id="marqueeTrack">
+      <span class="tag">Webflow-like motion</span>
+      <span class="tag">GSAP + ScrollTrigger</span>
+      <span class="tag">Lenis smooth scroll</span>
+      <span class="tag">Hover líquido</span>
+      <span class="tag">Tilt 3D</span>
+      <span class="tag">Galeria horizontal</span>
+      <span class="tag">Vídeo pinado</span>
+      <span class="tag">SEO pronto</span>
+      <span class="tag">UI minimal</span>
+      <span class="tag">UX com fricção zero</span>
+      <span class="tag">Webflow-like motion</span>
+      <span class="tag">GSAP + ScrollTrigger</span>
+      <span class="tag">Lenis smooth scroll</span>
+      <span class="tag">Hover líquido</span>
+      <span class="tag">Tilt 3D</span>
+      <span class="tag">Galeria horizontal</span>
+      <span class="tag">Vídeo pinado</span>
+      <span class="tag">SEO pronto</span>
+      <span class="tag">UI minimal</span>
+      <span class="tag">UX com fricção zero</span>
+    </div>
+  </div>
+
+  <section class="container video-pin">
+    <video id="reel" playsinline muted preload="auto" src="https://cdn.coverr.co/videos/coverr-shiny-marble-tiles-1893/1080p.mp4"></video>
+    <div class="video-caption">Reel sincronizado no scroll</div>
+  </section>
+
+  <section id="galeria" class="hscroll">
+    <div class="sticky">
+      <div class="hrow" id="hrow">
+        <div class="panel">
+          <h4>Arquitetura de seção</h4>
+          <img src="https://images.unsplash.com/photo-1515165562835-c3b8c2e2b4d1?q=80&w=1400&auto=format&fit=crop" alt="">
+          <p>Hierarquia visual que guia a leitura: título forte, respiro, CTA.</p>
+        </div>
+        <div class="panel">
+          <h4>Motion com propósito</h4>
+          <img src="https://images.unsplash.com/photo-1527694224012-be005121c774?q=80&w=1400&auto=format&fit=crop" alt="">
+          <p>Microinterações que destacam informação, não distraem.</p>
+        </div>
+        <div class="panel">
+          <h4>Performance</h4>
+          <img src="https://images.unsplash.com/photo-1496307042754-b4aa456c4a2d?q=80&w=1400&auto=format&fit=crop" alt="">
+          <p>Lazy-load, imagens otimizadas e JS só onde precisa.</p>
+        </div>
+        <div class="panel">
+          <h4>Conversão</h4>
+          <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=1400&auto=format&fit=crop" alt="">
+          <p>CTA claro, prova social, copy objetiva. Sim, funciona.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="container" aria-label="Cases">
+    <h2 class="headline-split fade-in" style="margin:60px 0 18px">Cases em destaque</h2>
+    <div class="cards" style="grid-template-columns:repeat(2,1fr);gap:22px">
+      <article class="card tilt fade-in" data-parallax="0.05">
+        <div class="media"><img src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?q=80&w=1400&auto=format&fit=crop" alt=""></div>
+        <div class="body"><h3>Empresa X</h3><p>Landing com aumento de conversão em 34%.</p></div>
+      </article>
+      <article class="card tilt fade-in" data-parallax="0.03">
+        <div class="media"><img src="https://images.unsplash.com/photo-1508780709619-79562169bc64?q=80&w=1400&auto=format&fit=crop" alt=""></div>
+        <div class="body"><h3>Produto Y</h3><p>Arquitetura de checkout simplificada.</p></div>
+      </article>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    Feito para vender, não para "impressionar o designer".  
+    <div class="small">© 2025 WebDesigner Pro — NASA-747 demo</div>
+  </div>
+</footer>
+
+<script>
+// Versão simplificada sem dependências externas
+(function() {
+  'use strict';
+
+  // Progress bar no scroll
+  function updateProgress() {
+    const scrolled = (window.pageYOffset / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+    document.getElementById('progress').style.width = scrolled + '%';
+  }
+
+  // Smooth scroll personalizado
+  function smoothScrollTo(target) {
+    const element = document.querySelector(target);
+    if (element) {
+      const offset = element.getBoundingClientRect().top + window.pageYOffset - 80;
+      window.scrollTo({
+        top: offset,
+        behavior: 'smooth'
+      });
+    }
+  }
+
+  // Observer para animações no scroll
+  const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('animate');
+        
+        // Animar palavras nos headlines
+        if (entry.target.classList.contains('headline-split')) {
+          const words = entry.target.querySelectorAll('.word');
+          words.forEach((word, i) => {
+            setTimeout(() => word.classList.add('animate'), i * 100);
+          });
+        }
+      }
+    });
+  }, observerOptions);
+
+  // Split text em palavras
+  function splitWords(element) {
+    const text = element.textContent.trim();
+    const words = text.split(/\s+/);
+    element.innerHTML = words.map(word => 
+      `<span class="word"><span>${word}</span></span>`
+    ).join(' ');
+  }
+
+  // Botão magnético
+  function setupMagneticButtons() {
+    document.querySelectorAll('.btn.magnet').forEach(btn => {
+      const maxMove = 20;
+      
+      btn.addEventListener('mousemove', (e) => {
+        const rect = btn.getBoundingClientRect();
+        const x = e.clientX - (rect.left + rect.width / 2);
+        const y = e.clientY - (rect.top + rect.height / 2);
+        
+        const moveX = Math.max(-maxMove, Math.min(maxMove, x * 0.3));
+        const moveY = Math.max(-maxMove, Math.min(maxMove, y * 0.3));
+        
+        btn.style.transform = `translate(${moveX}px, ${moveY}px)`;
+        
+        // Atualizar CSS custom properties para o efeito de hover
+        const mx = ((e.clientX - rect.left) / rect.width) * 100;
+        const my = ((e.clientY - rect.top) / rect.height) * 100;
+        btn.style.setProperty('--mx', mx + '%');
+        btn.style.setProperty('--my', my + '%');
+      });
+      
+      btn.addEventListener('mouseleave', () => {
+        btn.style.transform = 'translate(0, 0)';
+        btn.style.setProperty('--mx', '50%');
+        btn.style.setProperty('--my', '50%');
+      });
+    });
+  }
+
+  // Efeito 3D nos cards
+  function setupTiltCards() {
+    document.querySelectorAll('.tilt').forEach(card => {
+      const maxTilt = 10;
+      
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        const rotateX = ((y / rect.height) - 0.5) * -maxTilt;
+        const rotateY = ((x / rect.width) - 0.5) * maxTilt;
+        
+        card.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+      });
+      
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = 'perspective(800px) rotateX(0deg) rotateY(0deg)';
+      });
+    });
+  }
+
+  // Galeria horizontal com scroll
+  function setupHorizontalGallery() {
+    const hrow = document.getElementById('hrow');
+    const hscroll = document.querySelector('.hscroll');
+    
+    if (!hrow || !hscroll) return;
+    
+    let ticking = false;
+    
+    function updateGallery() {
+      const scrolled = window.pageYOffset;
+      const rate = scrolled / (hscroll.offsetHeight + window.innerHeight);
+      const maxScroll = hrow.scrollWidth - hrow.parentElement.clientWidth;
+      const translateX = Math.min(0, -rate * maxScroll);
+      
+      hrow.style.transform = `translateX(${translateX}px)`;
+      ticking = false;
+    }
+    
+    function onScroll() {
+      if (!ticking) {
+        requestAnimationFrame(updateGallery);
+        ticking = true;
+      }
+    }
+    
+    window.addEventListener('scroll', onScroll);
+  }
+
+  // Parallax simples
+  function setupParallax() {
+    const parallaxElements = document.querySelectorAll('[data-parallax]');
+    let ticking = false;
+    
+    function updateParallax() {
+      const scrolled = window.pageYOffset;
+      
+      parallaxElements.forEach(el => {
+        const speed = parseFloat(el.dataset.parallax) || 0.05;
+        const yPos = -(scrolled * speed);
+        el.style.transform = `translateY(${yPos}px)`;
+      });
+      
+      ticking = false;
+    }
+    
+    function onScroll() {
+      if (!ticking) {
+        requestAnimationFrame(updateParallax);
+        ticking = true;
+      }
+    }
+    
+    window.addEventListener('scroll', onScroll);
+  }
+
+  // Inicialização
+  function init() {
+    // Configurar elementos para animação
+    document.querySelectorAll('.fade-in, .scale-in').forEach(el => {
+      observer.observe(el);
+    });
+    
+    // Split headlines
+    document.querySelectorAll('.headline-split').forEach(headline => {
+      splitWords(headline);
+      observer.observe(headline);
+    });
+    
+    // Configurar interações
+    setupMagneticButtons();
+    setupTiltCards();
+    setupHorizontalGallery();
+    setupParallax();
+    
+    // Scroll listeners
+    window.addEventListener('scroll', updateProgress, { passive: true });
+    
+    // Links suaves
+    document.querySelectorAll('a[href^="#"]').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const target = link.getAttribute('href');
+        smoothScrollTo(target);
+      });
+    });
+    
+    // Autoplay do vídeo em mobile
+    document.addEventListener('click', () => {
+      const video = document.getElementById('reel');
+      if (video && video.paused) {
+        video.play().catch(() => {});
+      }
+    }, { once: true });
+    
+    // Trigger inicial para elementos já visíveis
+    setTimeout(() => {
+      const heroElements = document.querySelectorAll('.hero .fade-in, .hero .scale-in');
+      heroElements.forEach(el => el.classList.add('animate'));
+    }, 100);
+  }
+
+  // Aguardar DOM
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+</script>
+</body>
+</html>
